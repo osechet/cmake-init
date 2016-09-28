@@ -2,8 +2,8 @@
 
 # Default options
 BUILD_DIR="../build"
-CMAKE_GENERATOR="Ninja"
 BUILD_TYPE="Release"
+CMAKE_GENERATOR="Ninja"
 CMAKE_OPTIONS=""
 
 # Create default configs
@@ -42,7 +42,7 @@ then
     echo "# CMake and environment variables (e.g., search paths for external libraries)" >> ".localconfig/default"
     echo "" >> ".localconfig/default"
     echo "# Qt" >> ".localconfig/default"
-    echo "#export CMAKE_PREFIX_PATH=\"\${CMAKE_PREFIX_PATH}:/opt/Qt5.2.1/5.2.1/gcc_64/\"" >> ".localconfig/default"
+    echo "#export CMAKE_PREFIX_PATH=\"\${CMAKE_PREFIX_PATH}:/opt/Qt5.6.1/5.6/gcc_64/\"" >> ".localconfig/default"
 
     touch ".localconfig/debug"
     echo "#!/bin/bash" >> ".localconfig/debug"

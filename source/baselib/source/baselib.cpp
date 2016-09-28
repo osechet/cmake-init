@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-#include <template/template-version.h>
+#include <demo/demo-version.h>
 
 #include <baselib/baselib.h>
 
@@ -16,11 +16,11 @@ void printInfo()
     std::string dataPath = "data";
 
     // Library name
-    std::cout << "Library template::baselib" << std::endl;
+    std::cout << "Library demo::baselib" << std::endl;
     std::cout << "========================================" << std::endl;
 
     // Library version
-    std::cout << "Version: " << TEMPLATE_VERSION << std::endl;
+    std::cout << "Version: " << DEMO_VERSION << std::endl;
     std::cout << std::endl;
 
     // Library type (static or dynamic)
