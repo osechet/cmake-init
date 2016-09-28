@@ -146,6 +146,22 @@ if(NOT SYSTEM_DIR_INSTALL)
     endif()
 endif()
 
+#
+# Dependencies
+#
+
+find_program(CONAN_EXE "conan")
+if(CONAN_EXE)
+    message(STATUS "Installing dependencies with conan")
+    execute_process(COMMAND "${CONAN_EXE}" "install" "${CMAKE_SOURCE_DIR}"
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+else(CONAN_EXE)
+    message(FATAL_ERROR "conan must be in the path.")
+endif(CONAN_EXE)
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
 # 
 # Project modules

@@ -1,0 +1,9 @@
+[requires]
+gtest/master@smspillaz/gtest
+Qt/5.6.1-1@osechet/testing
+
+[options]
+Qt:shared=True
+
+[generators]
+cmake
