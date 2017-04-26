@@ -17,10 +17,11 @@ set(target fiblib)
 message(STATUS "Lib ${target}")
 
 # Set API export file and macro
-string(TOUPPER ${target} target_upper)
+string(MAKE_C_IDENTIFIER ${target} target_id)
+string(TOUPPER ${target_id} target_id)
 set(feature_file "include/${target}/${target}_features.h")
 set(export_file  "include/${target}/${target}_api.h")
-set(export_macro "${target_upper}_API")
+set(export_macro "${target_id}_API")
 
 
 # 
@@ -71,14 +72,14 @@ export(TARGETS ${target} NAMESPACE ${META_PROJECT_NAME}:: FILE ${PROJECT_BINARY_
 if (WriterCompilerDetectionHeaderFound)
     write_compiler_detection_header(
         FILE ${feature_file}
-        PREFIX ${target_upper}
+        PREFIX ${target_id}
         COMPILERS AppleClang Clang GNU MSVC
         FEATURES cxx_alignas cxx_alignof cxx_constexpr cxx_final cxx_noexcept cxx_nullptr cxx_sizeof_member cxx_thread_local
         VERSION 3.2
     )
 else()
     file(
-        COPY ${PROJECT_SOURCE_DIR}/codegeneration/${target}_features.h
+        COPY ${PROJECT_SOURCE_DIR}/source/codegeneration/${target}_features.h
         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/${target}
         USE_SOURCE_PERMISSIONS
     )
@@ -99,6 +100,8 @@ set_target_properties(${target}
     PROPERTIES
     ${DEFAULT_PROJECT_OPTIONS}
     FOLDER "${IDE_FOLDER}"
+    VERSION ${META_VERSION}
+    SOVERSION ${META_VERSION_MAJOR}
 )
 
 
@@ -144,7 +147,7 @@ target_compile_definitions(${target}
     PRIVATE
 
     PUBLIC
-    $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_upper}_STATIC_DEFINE>
+    $<$<NOT:$<BOOL:${BUILD_SHARED_LIBS}>>:${target_id}_STATIC_DEFINE>
     ${DEFAULT_COMPILE_DEFINITIONS}
 
     INTERFACE
@@ -176,6 +179,17 @@ target_link_libraries(${target}
     ${DEFAULT_LINKER_OPTIONS}
 
     INTERFACE
+)
+
+
+#
+# Target Health
+#
+
+perform_health_checks(
+    ${target}
+    ${sources}
+    ${headers}
 )
 
 

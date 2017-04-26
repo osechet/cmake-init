@@ -9,16 +9,19 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 # Include cmake modules
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-set(WriterCompilerDetectionHeaderFound NOTFOUND)
 
 include(GenerateExportHeader)
-include(ExternalProject)
 
+set(WriterCompilerDetectionHeaderFound NOTFOUND)
 # This module is only available with CMake >=3.1, so check whether it could be found
-include(WriteCompilerDetectionHeader OPTIONAL RESULT_VARIABLE WriterCompilerDetectionHeaderFound)
+# BUT in CMake 3.1 this module doesn't recognize AppleClang as compiler, so just use it as of CMake 3.2
+if (${CMAKE_VERSION} VERSION_GREATER "3.2")
+    include(WriteCompilerDetectionHeader OPTIONAL RESULT_VARIABLE WriterCompilerDetectionHeaderFound)
+endif()
 
 include(cmake/GetGitRevisionDescription.cmake)
 include(cmake/Custom.cmake)
+include(cmake/HealthCheck.cmake)
 
 # Set policies
 set_policy(CMP0028 NEW) # ENABLE CMP0028: Double colon in target name means ALIAS or IMPORTED target.
@@ -34,6 +37,9 @@ set_policy(CMP0063 NEW) # ENABLE CMP0063: Honor visibility properties for all ta
 # Get git revision
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 string(SUBSTRING "${GIT_SHA1}" 0 12 GIT_REV)
+if(NOT GIT_SHA1)
+    set(GIT_REV "0")
+endif()
 
 # Meta information about the project
 set(META_PROJECT_NAME        "demo")
@@ -47,6 +53,10 @@ set(META_VERSION_PATCH       "0")
 set(META_VERSION_REVISION    "${GIT_REV}")
 set(META_VERSION             "${META_VERSION_MAJOR}.${META_VERSION_MINOR}.${META_VERSION_PATCH}")
 set(META_NAME_VERSION        "${META_PROJECT_NAME} v${META_VERSION} (${META_VERSION_REVISION})")
+set(META_CMAKE_INIT_SHA      "${GIT_SHA1}")
+
+string(MAKE_C_IDENTIFIER ${META_PROJECT_NAME} META_PROJECT_ID)
+string(TOUPPER ${META_PROJECT_ID} META_PROJECT_ID)
 
 
 # 
@@ -67,7 +77,7 @@ option(OPTION_BUILD_EXAMPLES "Build examples."                                  
 
 # Generate folders for IDE targets (e.g., VisualStudio solutions)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-set(IDE_FOLDER "")  
+set(IDE_FOLDER "")
 
 # Declare project
 project(${META_PROJECT_NAME} C CXX)
@@ -86,6 +96,14 @@ file(WRITE "${PROJECT_BINARY_DIR}/VERSION" "${META_NAME_VERSION}")
 # 
 
 include(cmake/CompileOptions.cmake)
+
+
+#
+# Project Health Check Setup
+#
+
+enable_cppcheck(On)
+enable_clang_tidy(On)
 
 
 # 

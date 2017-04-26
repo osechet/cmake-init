@@ -3,8 +3,7 @@
 # Default options
 BUILD_DIR="../build"
 BUILD_TYPE="Release"
-CMAKE_GENERATOR="Ninja"
-CMAKE_OPTIONS=""
+CMAKE_OPTIONS="$CMAKE_OPTIONS"
 
 # Create default configs
 if [ ! -d "./.localconfig" ]
